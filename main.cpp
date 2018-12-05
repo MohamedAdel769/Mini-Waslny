@@ -31,9 +31,11 @@ int main() {
 	int n = 1;
 	string town;
 	map<string, int> graph_data;
+	map<int, string> graph_data2;
 	do {
 		cin >> town;
-		graph_data[town] = n++;
+		graph_data[town] = n;
+		graph_data2[n++] = town;
 	} while (town[0] != '1');
 	graph_data.erase("1");
 	cout << "Enter the distance between towns " << endl;
@@ -97,32 +99,52 @@ int main() {
 			}
 		}
 	}
-
-	cout << "enter two towns to get shortest path between them" << endl;
+	int option;
+	cout << "Enter 1 to display graph data, 2 to get shortest path between two towns, 3 to delete graph, 4 to edit graph, 5 to exit" << endl;
 	while (true) {
-		cin >> A >> B;
-		if (A == "null" || B == "null")
+		cin >> option;
+		if (option == 5)
 			break;
-		if (graph_data[A] == 1) {
-			stack<int> st;
-			int x = source[graph_data[B]];
-			st.push(graph_data[B]);
-			for (int i = 1; i < n; i++) {
-				st.push(x);
-				if (x == graph_data[A] || x == source[x])
+		if (option == 2) {
+			cout << "enter two towns to get shortest path between them" << endl;
+			while (true) {
+				cin >> A >> B;
+				if (A == "null" || B == "null")
 					break;
-				x = source[x];
+				if (graph_data[A] == 1) {
+					stack<int> st;
+					int x = source[graph_data[B]];
+					st.push(graph_data[B]);
+					for (int i = 1; i < n; i++) {
+						st.push(x);
+						if (x == graph_data[A] || x == source[x])
+							break;
+						x = source[x];
+					}
+					while (!st.empty()) {
+						cout << st.top() << " ";
+						st.pop();
+					}
+					cout << endl;
+					cout << "Path cost = " << cost[graph_data[B]] << endl;
+				}
+				else {
+					Path(next, graph_data[A], graph_data[B]);
+					cout << endl << "Path cost = " << floyd[graph_data[A]][graph_data[B]] << endl;
+				}
 			}
-			while (!st.empty()) {
-				cout << st.top() << " ";
-				st.pop();
-			}
-			cout << endl;
-			cout << "Path cost = " << cost[graph_data[B]] << endl;
 		}
-		else {
-			Path(next, graph_data[A], graph_data[B]);
-			cout << endl << "Path cost = " << floyd[graph_data[A]][graph_data[B]] << endl;
+		else if (option == 1) {
+			cout << "The Towns:";
+			for (auto it : graph_data)
+				cout << it.first << " ";
+			cout << endl;
+			cout << "Distance between towns:" << endl;
+			for (int i = 1; i < n; i++) {
+				for (int j = 0; j < adjlist[i].size(); j++) {
+					cout << graph_data2[i] << " " << graph_data2[adjlist[i][j].first] << " " << adjlist[i][j].second << endl;
+				}
+			}
 		}
 	}
 	return 0;
