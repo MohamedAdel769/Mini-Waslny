@@ -20,14 +20,18 @@ int main() {
 		cin >> B >> distance;
 		city.add_distance(A, B, distance);
 	}
+	/*
 	city.apply_dijkstra();
 	city.apply_floyd();
 	while (true) {
-		cin >> A;
-		if (A == "null")
-			break;
-		cin >> B;
-		city.get_shortestPath(A, B);
-	}
+	cin >> A;
+	if (A == "null")
+	break;
+	cin >> B;
+	city.get_shortestPath(A, B);
+	}*/
+	city.display_graph();
+	city.update_graph("add");
+	city.display_graph();
 	return 0;
 }

@@ -118,16 +118,62 @@ void Graph::get_shortestPath(string A, string B)
 
 void Graph::display_graph()
 {
-	cout << "Towns: ";
-	for (auto it : towns_data) {
-		cout << it.first << " ";
-	}
-	cout << endl;
-	cout << "Distances:" << endl;
-	for (int i = 1; i < NumberOfNodes; i++) {
-		for (int j = 0; j < adjlist[i].size(); j++) {
-			cout << graph_data[i] << " " << graph_data[adjlist[i][j].first] << " " << adjlist[i][j].second << endl;
+	if (!towns_data.empty()) {
+		cout << "Towns: ";
+		for (auto it : towns_data) {
+			cout << it.first << " ";
 		}
+		cout << endl;
+		cout << "Distances:" << endl;
+		for (int i = 1; i < NumberOfNodes; i++) {
+			if (graph_data.find(i) != graph_data.end()) {
+				for (int j = 0; j < adjlist[i].size(); j++) {
+					cout << graph_data[i] << " " << graph_data[adjlist[i][j].first] << " " << adjlist[i][j].second << endl;
+				}
+			}
+		}
+	}
+	else
+		cout << "The graph is empty" << endl;
+}
+
+void Graph::delete_graph()
+{
+	graph_data.clear();
+	towns_data.clear();
+	adjlist.clear();
+	source.clear();
+	cost.clear();
+	NumberOfNodes = 1;
+}
+
+void Graph::update_graph(string option)
+{
+	if (option == "add") {
+		string newTown;
+		cout << "Enter the new town(s)" << endl;
+		while (true) {
+			cin >> newTown;
+			if (newTown == "null")
+				break;
+			add_town(newTown);
+		}
+		cout << "want to add distance between other towns?" << endl;
+		string A, B;
+		int dist;
+		while (true) {
+			cin >> A;
+			if (A == "null")
+				break;
+			cin >> B >> dist;
+			add_distance(A, B, dist);
+		}
+	}
+	else if (option == "remove") {
+
+	}
+	else if (option == "edit") {
+
 	}
 }
 

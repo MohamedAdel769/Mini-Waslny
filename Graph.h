@@ -25,6 +25,8 @@ public:
 	void apply_floyd();
 	void get_shortestPath(string, string);
 	void display_graph();
+	void delete_graph();
+	void update_graph(string);
 	~Graph();
 };
 
