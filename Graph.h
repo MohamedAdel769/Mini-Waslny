@@ -14,7 +14,7 @@ class Graph
 	vector <int> source;
 	vector<int> cost;
 	priority_queue<pair<int, int>> pq;
-	int NumberOfNodes;
+	int Towns_ID, No_Towns;
 	int **next, **floyd;
 	void print_path(int **, int, int);
 public:
