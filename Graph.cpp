@@ -57,12 +57,10 @@ QString Graph::add_town(QString Tname)
 void Graph::add_distance(QString tA, QString tB, long long dist, bool& isValid)
 {
     int tA_ID = towns_data[tA], tB_ID = towns_data[tB];
-    if(adjmatrix.find(make_pair(tA_ID, tB_ID))==adjmatrix.end()){
+    if(!isConnected(tA_ID, tB_ID)){
         adjlist[tA_ID].push_back({ tB_ID, dist });
         adjlist[tB_ID].push_back({ tA_ID, dist });
         MAX_DIST += dist ;
-        adjmatrix[make_pair(tA_ID, tB_ID)] = 1;
-        adjmatrix[make_pair(tB_ID, tA_ID)] = 1;
     }
     else{
         isValid = false ;
@@ -198,7 +196,6 @@ void Graph::delete_graph()
     adjlist.clear();
     source.clear();
     cost.clear();
-    adjmatrix.clear();
     Towns_ID = 1;
 }
 
@@ -248,6 +245,14 @@ void Graph::remove_edge(QString a, QString b, bool &isValid){
             adjlist[b_id].erase(it);
         }
     }
+}
+
+bool Graph::isConnected(int A,int B){
+    for(int i=0;i<adjlist[A].size();i++){
+        if(adjlist[A][i].first == B)
+            return true ;
+    }
+    return false;
 }
 
 

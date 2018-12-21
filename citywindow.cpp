@@ -93,8 +93,10 @@ void CityWindow::on_addDistBtn_clicked()
 
 void CityWindow::on_addTownBtn_clicked()
 {
+    ui->stackedWidget->setCurrentIndex(0);
     ui->input_txt->setEnabled(true);
     ui->output_txt->clear();
+    ui->input_txt->setFocus();
     QString town = ui->input_txt->toPlainText();
     if(town == "")
         ui->output_txt->setText("Please enter the town name to add it.");

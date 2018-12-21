@@ -13,15 +13,15 @@ class Graph
     vector< vector<pair<int, long long> > > adjlist;
     map<int, QString> graph_data;
     map<QString, int> towns_data;
-    map<pair<int,int>, int> adjmatrix;
     vector <int> source;
     vector<long long> cost;
     priority_queue<pair<long long, int>> pq;
-    int Towns_ID , No_Towns;
+    int Towns_ID ;
     long long **next , **floyd;
     long long MAX_DIST = 0;
     QString temp ;
     QString print_path(long long **, int , int );
+    bool isConnected(int, int);
 public:
     Graph();
     QString add_town(QString);
