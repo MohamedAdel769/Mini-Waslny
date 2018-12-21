@@ -99,14 +99,22 @@ void CityWindow::on_addTownBtn_clicked()
     if(town == "")
         ui->output_txt->setText("Please enter the town name to add it.");
     else{
-        city.add_town(town);
-        ui->towns_list->addItem(town);
-        ui->towns_list2->addItem(town);
-        ui->towns_list_2->addItem(town);
-        ui->towns_list_3->addItem(town);
-        ui->towns_list2_2->addItem(town);
-        ui->towns_list2_3->addItem(town);
-        ui->output_txt->setText(town + " added to the city successfully!");
+        town = city.add_town(town);
+        if(town=="Town already exist")
+        {
+             ui->output_txt->setText(town);
+        }
+        else
+        {
+            ui->towns_list->addItem(town);
+            ui->towns_list2->addItem(town);
+            ui->towns_list_2->addItem(town);
+            ui->towns_list_3->addItem(town);
+            ui->towns_list2_2->addItem(town);
+            ui->towns_list2_3->addItem(town);
+            ui->output_txt->setText(town + " added to the city successfully!");
+        }
+
     }
     ui->input_txt->clear();
 }
@@ -115,23 +123,31 @@ void CityWindow::on_Add_dist_clicked()
 {
     QString A = ui->towns_list->currentText();
     QString B = ui->towns_list2->currentText();
-    long long dist = ui->dist_val->text().toLong();
-    bool validation = true ;
-    if(dist > 0){
-        city.add_distance(A, B, dist,validation);
-        if(validation){
-            ui->instructions_txt->setText("Distance added Successfully!");
+    if (A==B)
+    {
+        ui->instructions_txt->setText("Can't add distance between the same town!");
+    }
+    else
+    {
+        long long dist = ui->dist_val->text().toLong();
+        bool validation = true ;
+        if(dist > 0){
+            city.add_distance(A, B, dist,validation);
+            if(validation){
+                ui->instructions_txt->setText("Distance added Successfully!");
+            }
+            else{
+                 ui->instructions_txt->setText("There is already distance between the selected towns.");
+            }
+        }
+        else if(dist == 0){
+            ui->instructions_txt->setText("Distance can't be zero/empty.");
         }
         else{
-             ui->instructions_txt->setText("There is already distance between the selected towns.");
+            ui->instructions_txt->setText("Distance can't be negative.");
         }
     }
-    else if(dist == 0){
-        ui->instructions_txt->setText("Distance can't be zero/empty.");
-    }
-    else{
-        ui->instructions_txt->setText("Distance can't be negative.");
-    }
+
 }
 
 void CityWindow::upd_options_enabled(bool flag){

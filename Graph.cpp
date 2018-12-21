@@ -38,12 +38,20 @@ void Graph::initialize(){
     add_distance("E", "F", 6, tmp);
 }
 
-void Graph::add_town(QString Tname)
+QString Graph::add_town(QString Tname)
 {
-    graph_data[Towns_ID] = Tname;
-    towns_data[Tname] = Towns_ID++;
-    adjlist.resize(Towns_ID);
-    source.resize(Towns_ID);
+    if(towns_data.find(Tname)==towns_data.end())
+    {
+        graph_data[Towns_ID] = Tname;
+        towns_data[Tname] = Towns_ID++;
+        adjlist.resize(Towns_ID);
+        source.resize(Towns_ID);
+    }
+    else
+    {
+        Tname = "Town already exist";
+    }
+    return  Tname;
 }
 
 void Graph::add_distance(QString tA, QString tB, long long dist, bool& isValid)
