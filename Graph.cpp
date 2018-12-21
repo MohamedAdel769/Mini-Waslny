@@ -1,13 +1,12 @@
 #include "Graph.h"
 
 
-
 QString Graph::print_path(long long **next, int i, int j)
 {
     if (i == j)
         temp += graph_data[i] + " ";
     else if (next[i][j] == -1)
-        temp += "no path found\n" ;
+        temp = "no path found\n" ;
     else {
         print_path(next, i, next[i][j]);
         temp += graph_data[j] + " ";
@@ -21,22 +20,31 @@ Graph::Graph()
 }
 
 void Graph::initialize(){
-    add_town("makram");
-    add_town("abbas");
-    add_town("abasya");
-    add_town("sheraton");
-    add_town("ramses");
-    add_town("masrelgdeda");
+    add_town("A");
+    add_town("B");
+    add_town("C");
+    add_town("D");
+    add_town("E");
+    add_town("F");
     bool tmp ;
-    add_distance("makram", "abbas", 7, tmp);
-    add_distance("makram", "abasya", 9, tmp);
-    add_distance("makram", "masrelgdeda", 14, tmp);
-    add_distance("abasya", "abbas", 10, tmp);
-    add_distance("abbas", "sheraton", 15, tmp);
-    add_distance("abasya", "sheraton", 11, tmp);
-    add_distance("abasya", "masrelgdeda", 2, tmp);
-    add_distance("masrelgdeda", "ramses", 9, tmp);
-    add_distance("sheraton", "ramses", 6, tmp);
+    add_distance("A", "B", 7, tmp);
+    add_distance("A", "C", 9, tmp);
+    add_distance("A", "D", 14, tmp);
+    add_distance("B", "C", 10, tmp);
+    add_distance("B", "E", 15, tmp);
+    add_distance("C", "E", 11, tmp);
+    add_distance("C", "D", 2, tmp);
+    add_distance("D", "F", 9, tmp);
+    add_distance("E", "F", 6, tmp);
+}
+
+bool Graph::isConnected(int A, int B){
+    for(int i=0;i<adjlist[A].size();i++){
+        if(adjlist[A][i].first == B){
+            return true ;
+        }
+    }
+    return false;
 }
 
 void Graph::add_town(QString Tname)
@@ -50,11 +58,10 @@ void Graph::add_town(QString Tname)
 void Graph::add_distance(QString tA, QString tB, long long dist, bool& isValid)
 {
     int tA_ID = towns_data[tA], tB_ID = towns_data[tB];
-    if(adjmatrix.find(make_pair(tA_ID, tB_ID))==adjmatrix.end()){
+    if(!isConnected(tA_ID, tB_ID)){
         adjlist[tA_ID].push_back({ tB_ID, dist });
         adjlist[tB_ID].push_back({ tA_ID, dist });
         MAX_DIST += dist ;
-        adjmatrix[make_pair(tA_ID, tB_ID)] = 1;
     }
     else{
         isValid = false ;
@@ -92,7 +99,7 @@ void Graph::apply_floyd()
     }
     for (int i = 1; i < Towns_ID; i++) {
         for (int j = 1; j < Towns_ID; j++)
-            floyd[i][j] = i != j ? 1e9 : 0;
+            floyd[i][j] = i != j ? 1e17 : 0;
     }
     for (int i = 1; i < Towns_ID; i++) {
         for (int j = 0; j < adjlist[i].size(); j++) {
@@ -102,7 +109,7 @@ void Graph::apply_floyd()
     }
     for (int i = 1; i < Towns_ID; i++) {
         for (int j = 1; j < Towns_ID; j++) {
-            next[i][j] = floyd[i][j] == 1e9 ? -1 : i;
+            next[i][j] = floyd[i][j] == 1e17 ? -1 : i;
         }
     }
     for (int k = 1; k < Towns_ID; k++) {
@@ -190,7 +197,6 @@ void Graph::delete_graph()
     adjlist.clear();
     source.clear();
     cost.clear();
-    adjmatrix.clear();
     Towns_ID = 1;
 }
 

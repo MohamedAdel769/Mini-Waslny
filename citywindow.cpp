@@ -15,7 +15,7 @@ CityWindow::CityWindow(QWidget *parent) :
     ui->setupUi(this);
     city.initialize();
     ui->stackedWidget->setCurrentIndex(0);
-    QStringList initial_towns = {"makram", "abbas", "abasya", "sheraton", "ramses", "gdeda"};
+    QStringList initial_towns = {"A", "E", "B", "C", "F", "D"};
     ui->towns_list->addItems(initial_towns);
     ui->towns_list2->addItems(initial_towns);
     ui->towns_list_2->addItems(initial_towns);
@@ -40,6 +40,9 @@ void CityWindow::on_main_menu_clicked()
 void CityWindow::on_updBtn_clicked()
 {
     ui->input_txt->setEnabled(false);
+    ui->inst_label->setText("Choose an update option then enter the data you want to update it, click update!");
+    upd_options_enabled(false);
+    ui->upd_options->setCurrentIndex(0);
     ui->stackedWidget->setCurrentIndex(3);
 }
 
@@ -67,6 +70,7 @@ void CityWindow::on_deleteBtn_clicked()
 void CityWindow::on_SPBtn_clicked()
 {
     ui->stackedWidget->setCurrentIndex(2);
+    ui->SP_output->clear();
     ui->input_txt->setEnabled(false);
 }
 
@@ -82,6 +86,8 @@ void CityWindow::on_dispBtn_clicked()
 void CityWindow::on_addDistBtn_clicked()
 {
     ui->input_txt->setEnabled(false);
+    ui->dist_val->text().clear();
+    ui->instructions_txt->setText("Choose the towns then enter the distance between them, then click Add!");
     ui->stackedWidget->setCurrentIndex(1);
 }
 
@@ -89,6 +95,7 @@ void CityWindow::on_addTownBtn_clicked()
 {
     ui->input_txt->setEnabled(true);
     ui->output_txt->clear();
+    ui->input_txt->setFocus();
     QString town = ui->input_txt->toPlainText();
     if(town == "")
         ui->output_txt->setText("Please enter the town name to add it.");
@@ -113,8 +120,9 @@ void CityWindow::on_Add_dist_clicked()
     bool validation = true ;
     if(dist > 0){
         city.add_distance(A, B, dist,validation);
-        if(validation)
+        if(validation){
             ui->instructions_txt->setText("Distance added Successfully!");
+        }
         else{
              ui->instructions_txt->setText("There is already distance between the selected towns.");
         }
@@ -154,6 +162,7 @@ void CityWindow::on_getSP_btn_clicked()
 void CityWindow::on_upd_options_currentIndexChanged(int index)
 {
     upd_options_enabled(false);
+    ui->dist_val_2->clear();
     if(index == 1){ // delete town
         ui->town_label->setText("Town");
         ui->town_label->setEnabled(true);
