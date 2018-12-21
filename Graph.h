@@ -24,7 +24,7 @@ class Graph
     QString print_path(long long **, int , int );
 public:
     Graph();
-    void add_town(QString);
+    QString add_town(QString);
     bool isEmpty();
     void add_distance(QString, QString, long long, bool&);
     void apply_dijkstra();

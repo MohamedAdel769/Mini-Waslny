@@ -180,7 +180,7 @@
      <enum>QFrame::Plain</enum>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="display_page">
      <widget class="QTextBrowser" name="output_txt">
