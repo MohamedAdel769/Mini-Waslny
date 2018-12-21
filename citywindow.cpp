@@ -187,7 +187,6 @@ void CityWindow::on_upd_btn_clicked()
 {
     int index = ui->upd_options->currentIndex();
     if(index == 1){
-        bool tmp;
         int index = ui->towns_list_3->currentIndex();
         QString del_town = ui->towns_list_3->currentText();
         city.del_town(del_town);
