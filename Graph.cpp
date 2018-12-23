@@ -46,6 +46,10 @@ QString Graph::add_town(QString Tname)
         towns_data[Tname] = Towns_ID++;
         adjlist.resize(Towns_ID);
         source.resize(Towns_ID);
+        UndoDetails tmp ;
+        tmp.AddT = 1;
+        tmp.Tname = Tname;
+        last_updts.push(tmp);
     }
     else
     {
@@ -201,9 +205,13 @@ void Graph::delete_graph()
 
 void Graph::del_town(QString input){
     int del_id = towns_data[input];
+    UndoDetails tmp ;
+    tmp.DelT = 1 ;
+    tmp.Tname = input;
     vector<pair<int, long long>> ::iterator it;
     for (int i = 0; i < adjlist[del_id].size(); i++) {
         int child = adjlist[del_id][i].first;
+        tmp.childs.push_back(make_pair(graph_data[child], adjlist[del_id][i].second));
         for (it = adjlist[child].begin();it!= adjlist[child].end();it++) {
             if ((*it).first == del_id) {
                 adjlist[child].erase(it);
@@ -211,6 +219,7 @@ void Graph::del_town(QString input){
             }
         }
     }
+    last_updts.push(tmp);
     adjlist[del_id].clear();
     towns_data.erase(input);
     graph_data.erase(del_id);
@@ -253,6 +262,34 @@ bool Graph::isConnected(int A,int B){
             return true ;
     }
     return false;
+}
+
+void Graph::Undo(){
+    UndoDetails tmp = last_updts.top();
+    last_updts.pop();
+    if(tmp.AddD){
+
+    }
+    else if(tmp.AddT){
+        del_town(tmp.Tname);
+    }
+    else if(tmp.DelC){
+
+    }
+    else if(tmp.DelD){
+
+    }
+    else if(tmp.DelT){
+        add_town(tmp.Tname);
+        bool temp ;
+        while (!tmp.childs.empty()) {
+               add_distance(tmp.Tname, tmp.childs.back().first, tmp.childs.back().second, temp);
+               tmp.childs.pop_back();
+        }
+    }
+    else if(tmp.EditD){
+
+    }
 }
 
 

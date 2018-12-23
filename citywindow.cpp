@@ -246,3 +246,8 @@ void CityWindow::on_upd_btn_clicked()
             ui->inst_label->setText("There is no distance between the chosen towns.");
     }
 }
+
+void CityWindow::on_pushButton_clicked()
+{
+    city.Undo();
+}

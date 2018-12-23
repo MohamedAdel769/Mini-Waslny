@@ -8,6 +8,13 @@
 #include <string>
 #include <QString>
 using namespace std;
+
+struct UndoDetails{
+    bool AddT = 0 , AddD = 0 , DelC = 0 , DelT = 0 , DelD = 0 , EditD = 0;
+    QString Tname;
+    vector<pair<QString, long long>> childs;
+};
+
 class Graph
 {
     vector< vector<pair<int, long long> > > adjlist;
@@ -22,6 +29,7 @@ class Graph
     QString temp ;
     QString print_path(long long **, int , int );
     bool isConnected(int, int);
+    stack<UndoDetails> last_updts;
 public:
     Graph();
     QString add_town(QString);
@@ -36,6 +44,7 @@ public:
     void del_town(QString);
     void edit_dist(QString, QString, long long, bool&);
     void remove_edge(QString, QString, bool&);
+    void Undo();
     ~Graph();
 };
 
