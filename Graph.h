@@ -7,12 +7,15 @@
 #include <stack>
 #include <string>
 #include <QString>
+#include <QComboBox>
 using namespace std;
 
 struct UndoDetails{
     bool AddT = 0 , AddD = 0 , DelC = 0 , DelT = 0 , DelD = 0 , EditD = 0;
-    QString Tname;
+    QString Tname1 , Tname2;
+    long long dist;
     vector<pair<QString, long long>> childs;
+    vector <UndoDetails> cityDetails ;
 };
 
 class Graph
@@ -38,6 +41,7 @@ public:
     void apply_dijkstra();
     void apply_floyd();
     void initialize();
+    void Fill(QComboBox*);
     QString get_shortestPath(QString, QString, bool&);
     QString display_graph();
     void delete_graph();

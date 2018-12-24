@@ -4,7 +4,7 @@
 #include <string>
 #include <QStringList>
 #include <QMessageBox>
-#include<iostream>
+#include <iostream>
 
 using namespace std;
 
@@ -149,7 +149,7 @@ void CityWindow::on_Add_dist_clicked()
             ui->instructions_txt->setText("Distance can't be negative.");
         }
     }
-
+    ui->dist_val->clear();
 }
 
 void CityWindow::upd_options_enabled(bool flag){
@@ -250,4 +250,16 @@ void CityWindow::on_upd_btn_clicked()
 void CityWindow::on_pushButton_clicked()
 {
     city.Undo();
+    ui->towns_list->clear();
+    ui->towns_list2->clear();
+    ui->towns_list_2->clear();
+    ui->towns_list_3->clear();
+    ui->towns_list2_2->clear();
+    ui->towns_list2_3->clear();
+    city.Fill(ui->towns_list);
+    city.Fill(ui->towns_list2);
+    city.Fill(ui->towns_list_2);
+    city.Fill(ui->towns_list_3);
+    city.Fill(ui->towns_list2_2);
+    city.Fill(ui->towns_list2_3);
 }
