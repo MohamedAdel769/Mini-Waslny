@@ -37,18 +37,19 @@ public:
     Graph();
     QString add_town(QString);
     bool isEmpty();
-    void add_distance(QString, QString, long long, bool&);
+    void add_distance(QString, QString, long long);
     void apply_dijkstra();
     void apply_floyd();
     void initialize();
     void Fill(QComboBox*);
-    QString get_shortestPath(QString, QString, bool&);
+    QString get_shortestPath(QString, QString);
     QString display_graph();
     void delete_graph();
     void del_town(QString);
-    void edit_dist(QString, QString, long long, bool&);
-    void remove_edge(QString, QString, bool&);
+    void edit_dist(QString, QString, long long);
+    void remove_edge(QString, QString);
     void Undo();
+    bool isvalid(string, QString, QString);
     ~Graph();
 };
 

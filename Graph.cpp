@@ -26,16 +26,15 @@ void Graph::initialize(){
     add_town("D");
     add_town("E");
     add_town("F");
-    bool tmp ;
-    add_distance("A", "B", 7, tmp);
-    add_distance("A", "C", 9, tmp);
-    add_distance("A", "D", 14, tmp);
-    add_distance("B", "C", 10, tmp);
-    add_distance("B", "E", 15, tmp);
-    add_distance("C", "E", 11, tmp);
-    add_distance("C", "D", 2, tmp);
-    add_distance("D", "F", 9, tmp);
-    add_distance("E", "F", 6, tmp);
+    add_distance("A", "B", 7);
+    add_distance("A", "C", 9);
+    add_distance("A", "D", 14);
+    add_distance("B", "C", 10);
+    add_distance("B", "E", 15);
+    add_distance("C", "E", 11);
+    add_distance("C", "D", 2);
+    add_distance("D", "F", 9);
+    add_distance("E", "F", 6);
 }
 
 QString Graph::add_town(QString Tname)
@@ -58,22 +57,17 @@ QString Graph::add_town(QString Tname)
     return  Tname;
 }
 
-void Graph::add_distance(QString tA, QString tB, long long dist, bool& isValid)
+void Graph::add_distance(QString tA, QString tB, long long dist)
 {
     int tA_ID = towns_data[tA], tB_ID = towns_data[tB];
-    if(!isConnected(tA_ID, tB_ID)){
-        adjlist[tA_ID].push_back({ tB_ID, dist });
-        adjlist[tB_ID].push_back({ tA_ID, dist });
-        MAX_DIST += dist ;
-        UndoDetails tmp ;
-        tmp.AddD = 1;
-        tmp.Tname1 = tA;
-        tmp.Tname2 = tB;
-        last_updts.push(tmp);
-    }
-    else{
-        isValid = false ;
-    }
+    adjlist[tA_ID].push_back({ tB_ID, dist });
+    adjlist[tB_ID].push_back({ tA_ID, dist });
+    MAX_DIST += dist ;
+    UndoDetails tmp ;
+    tmp.AddD = 1;
+    tmp.Tname1 = tA;
+    tmp.Tname2 = tB;
+    last_updts.push(tmp);
 }
 
 void Graph::apply_dijkstra()
@@ -132,7 +126,7 @@ void Graph::apply_floyd()
     }
 }
 
-QString Graph::get_shortestPath(QString A, QString B, bool &isValid)
+QString Graph::get_shortestPath(QString A, QString B)
 {
     QString ans = "Route: " ;
     if (towns_data[A] == 1) {
@@ -154,16 +148,12 @@ QString Graph::get_shortestPath(QString A, QString B, bool &isValid)
         ans += "\n";
         ans += "This path costs = ";
         ans += QString::number(cost[towns_data[B]]);
-        if(cost[towns_data[B]] > MAX_DIST)
-            isValid = false ;
     }
     else {
         ans += print_path(next, towns_data[A], towns_data[B]);
         ans += "\nThis path costs = " ;
         ans += QString::number(floyd[towns_data[A]][towns_data[B]]) + "\n";
         temp.clear();
-        if(floyd[towns_data[A]][towns_data[B]] > MAX_DIST)
-            isValid = false ;
     }
     return ans ;
 }
@@ -243,7 +233,7 @@ void Graph::del_town(QString input){
     graph_data.erase(del_id);
 }
 
-void Graph::edit_dist(QString a, QString b, long long new_dist, bool &isValid){
+void Graph::edit_dist(QString a, QString b, long long new_dist){
     int a_id = towns_data[a], b_id = towns_data[b];
     UndoDetails tmp ;
     for (int i = 0; i < adjlist[a_id].size(); i++) {
@@ -254,7 +244,6 @@ void Graph::edit_dist(QString a, QString b, long long new_dist, bool &isValid){
             tmp.dist = adjlist[a_id][i].second;
             last_updts.push(tmp);
             adjlist[a_id][i].second = new_dist;
-            isValid = true ;
             break;
         }
     }
@@ -266,13 +255,12 @@ void Graph::edit_dist(QString a, QString b, long long new_dist, bool &isValid){
     }
 }
 
-void Graph::remove_edge(QString a, QString b, bool &isValid){
+void Graph::remove_edge(QString a, QString b){
     int a_id = towns_data[a] , b_id = towns_data[b];
     vector<pair<int, long long>> :: iterator it ;
     UndoDetails tmp ;
     for(it = adjlist[a_id].begin();it != adjlist[a_id].end();it++){
         if ((*it).first == b_id) {
-            isValid = true ;
             tmp.Tname1 = a;
             tmp.DelD = 1;
             tmp.Tname2 = b;
@@ -299,37 +287,39 @@ bool Graph::isConnected(int A,int B){
 }
 
 void Graph::Undo(){
-    UndoDetails tmp = last_updts.top();
-    last_updts.pop();
-    bool temp ;
-    if(tmp.AddD){
-        remove_edge(tmp.Tname1, tmp.Tname2, temp);
-    }
-    else if(tmp.AddT){
-        del_town(tmp.Tname1);
-    }
-    else if(tmp.DelC){
-        for(auto i : tmp.cityDetails){
-            add_town(i.Tname1);
+    if(!last_updts.empty()){
+        UndoDetails tmp = last_updts.top();
+        last_updts.pop();
+        bool temp ;
+        if(tmp.AddD){
+            remove_edge(tmp.Tname1, tmp.Tname2);
         }
-        for(auto i : tmp.cityDetails){
-            for(int j=0;j<i.childs.size();j++){
-                add_distance(i.Tname1, i.childs[j].first, i.childs[j].second, temp);
+        else if(tmp.AddT){
+            del_town(tmp.Tname1);
+        }
+        else if(tmp.DelC){
+            for(auto i : tmp.cityDetails){
+                add_town(i.Tname1);
+            }
+            for(auto i : tmp.cityDetails){
+                for(int j=0;j<i.childs.size();j++){
+                    add_distance(i.Tname1, i.childs[j].first, i.childs[j].second);
+                }
             }
         }
-    }
-    else if(tmp.DelD){
-        add_distance(tmp.Tname1, tmp.Tname2, tmp.dist, temp);
-    }
-    else if(tmp.DelT){
-        add_town(tmp.Tname1);
-        while (!tmp.childs.empty()) {
-               add_distance(tmp.Tname1, tmp.childs.back().first, tmp.childs.back().second, temp);
-               tmp.childs.pop_back();
+        else if(tmp.DelD){
+            add_distance(tmp.Tname1, tmp.Tname2, tmp.dist);
         }
-    }
-    else if(tmp.EditD){
-        edit_dist(tmp.Tname1, tmp.Tname2, tmp.dist, temp);
+        else if(tmp.DelT){
+            add_town(tmp.Tname1);
+            while (!tmp.childs.empty()) {
+                   add_distance(tmp.Tname1, tmp.childs.back().first, tmp.childs.back().second);
+                   tmp.childs.pop_back();
+            }
+        }
+        else if(tmp.EditD){
+            edit_dist(tmp.Tname1, tmp.Tname2, tmp.dist);
+        }
     }
 }
 
@@ -338,6 +328,23 @@ void Graph::Fill(QComboBox *my_list){
         for(auto town : towns_data){
             my_list->addItem(town.first);
         }
+    }
+}
+
+bool Graph::isvalid(string fn_name, QString tA, QString tB){
+    if(fn_name == "Add"){
+        return (!isConnected(towns_data[tA], towns_data[tB])) ;
+    }
+    else if(fn_name == "SP"){
+        if(towns_data[tA] == 1){
+            return (cost[towns_data[tB]] <= MAX_DIST) ;
+        }
+        else{
+            return (floyd[towns_data[tA]][towns_data[tB]] <= MAX_DIST);
+        }
+    }
+    else{
+        return (isConnected(towns_data[tA], towns_data[tB]));
     }
 }
 
