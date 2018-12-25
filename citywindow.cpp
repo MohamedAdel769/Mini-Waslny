@@ -4,7 +4,7 @@
 #include <string>
 #include <QStringList>
 #include <QMessageBox>
-#include<iostream>
+#include <iostream>
 
 using namespace std;
 
@@ -53,6 +53,7 @@ void CityWindow::on_deleteBtn_clicked()
     ui->output_txt->clear();
     ui->input_txt->clear();
     if(!city.isEmpty()){
+        city.user = true ;
         city.delete_graph();
         ui->output_txt->setText("City deleted Successfully!");
         ui->towns_list->clear();
@@ -101,6 +102,7 @@ void CityWindow::on_addTownBtn_clicked()
     if(town == "")
         ui->output_txt->setText("Please enter the town name to add it.");
     else{
+        city.user = true ;
         town = city.add_town(town);
         if(town=="Town already exist")
         {
@@ -132,10 +134,11 @@ void CityWindow::on_Add_dist_clicked()
     else
     {
         long long dist = ui->dist_val->text().toLong();
-        bool validation = true ;
+        bool validation = city.isvalid("Add", A, B) ;
         if(dist > 0){
-            city.add_distance(A, B, dist,validation);
             if(validation){
+                city.user = true ;
+                city.add_distance(A, B, dist);
                 ui->instructions_txt->setText("Distance added Successfully!");
             }
             else{
@@ -149,7 +152,7 @@ void CityWindow::on_Add_dist_clicked()
             ui->instructions_txt->setText("Distance can't be negative.");
         }
     }
-
+    ui->dist_val->clear();
 }
 
 void CityWindow::upd_options_enabled(bool flag){
@@ -168,10 +171,11 @@ void CityWindow::on_getSP_btn_clicked()
     QString B = ui->towns_list2_2->currentText();
     city.apply_dijkstra();
     city.apply_floyd();
-    bool Validation = true ;
-    QString output = city.get_shortestPath(A, B, Validation);
-    if(Validation)
+    bool Validation = city.isvalid("SP", A, B) ;
+    if(Validation){
+        QString output = city.get_shortestPath(A, B);
         ui->SP_output->setText(output);
+    }
     else
         ui->SP_output->setText("No Path Found!");
 }
@@ -203,6 +207,7 @@ void CityWindow::on_upd_options_currentIndexChanged(int index)
 void CityWindow::on_upd_btn_clicked()
 {
     int index = ui->upd_options->currentIndex();
+    city.user = true ;
     if(index == 1){
         bool tmp;
         int index = ui->towns_list_3->currentIndex();
@@ -220,11 +225,12 @@ void CityWindow::on_upd_btn_clicked()
         QString A = ui->towns_list_3->currentText();
         QString B = ui->towns_list2_3->currentText();
         long long newDist = ui->dist_val_2->text().toLong();
-        bool flag = false ;
         if(newDist > 0){
-            city.edit_dist(A, B, newDist, flag);
-            if(flag)
+            bool validation = city.isvalid("upd", A, B) ;
+            if(validation){
+                city.edit_dist(A, B, newDist);
                 ui->inst_label->setText("New Distance added Successfully!");
+            }
             else
                 ui->inst_label->setText("There is no distance between the chosen towns.");
         }
@@ -238,11 +244,30 @@ void CityWindow::on_upd_btn_clicked()
     else{
         QString A = ui->towns_list_3->currentText();
         QString B = ui->towns_list2_3->currentText();
-        bool flag = false ;
-        city.remove_edge(A, B, flag);
-        if(flag)
+        bool validation = city.isvalid("upd", A, B) ;
+        if(validation){
             ui->inst_label->setText("Distance deleted Successfully!");
+            city.remove_edge(A, B);
+        }
         else
             ui->inst_label->setText("There is no distance between the chosen towns.");
     }
+}
+
+void CityWindow::on_pushButton_clicked()
+{
+    city.Undo();
+    ui->towns_list->clear();
+    ui->towns_list2->clear();
+    ui->towns_list_2->clear();
+    ui->towns_list_3->clear();
+    ui->towns_list2_2->clear();
+    ui->towns_list2_3->clear();
+    city.Fill(ui->towns_list);
+    city.Fill(ui->towns_list2);
+    city.Fill(ui->towns_list_2);
+    city.Fill(ui->towns_list_3);
+    city.Fill(ui->towns_list2_2);
+    city.Fill(ui->towns_list2_3);
+    on_dispBtn_clicked();
 }

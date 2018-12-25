@@ -42,6 +42,8 @@ private slots:
 
     void on_upd_btn_clicked();
 
+    void on_pushButton_clicked();
+
 public:
     Ui::CityWindow *ui;
     Graph city ;
