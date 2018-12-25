@@ -28,13 +28,14 @@ class Graph
     priority_queue<pair<long long, int>> pq;
     int Towns_ID ;
     long long **next , **floyd;
-    long long MAX_DIST = 0;
+    long long MAX_DIST ;
     QString temp ;
     QString print_path(long long **, int , int );
     bool isConnected(int, int);
     stack<UndoDetails> last_updts;
 public:
     Graph();
+    bool user ;
     QString add_town(QString);
     bool isEmpty();
     void add_distance(QString, QString, long long);

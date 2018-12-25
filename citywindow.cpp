@@ -53,6 +53,7 @@ void CityWindow::on_deleteBtn_clicked()
     ui->output_txt->clear();
     ui->input_txt->clear();
     if(!city.isEmpty()){
+        city.user = true ;
         city.delete_graph();
         ui->output_txt->setText("City deleted Successfully!");
         ui->towns_list->clear();
@@ -101,6 +102,7 @@ void CityWindow::on_addTownBtn_clicked()
     if(town == "")
         ui->output_txt->setText("Please enter the town name to add it.");
     else{
+        city.user = true ;
         town = city.add_town(town);
         if(town=="Town already exist")
         {
@@ -135,6 +137,7 @@ void CityWindow::on_Add_dist_clicked()
         bool validation = city.isvalid("Add", A, B) ;
         if(dist > 0){
             if(validation){
+                city.user = true ;
                 city.add_distance(A, B, dist);
                 ui->instructions_txt->setText("Distance added Successfully!");
             }
@@ -204,6 +207,7 @@ void CityWindow::on_upd_options_currentIndexChanged(int index)
 void CityWindow::on_upd_btn_clicked()
 {
     int index = ui->upd_options->currentIndex();
+    city.user = true ;
     if(index == 1){
         bool tmp;
         int index = ui->towns_list_3->currentIndex();
@@ -265,4 +269,5 @@ void CityWindow::on_pushButton_clicked()
     city.Fill(ui->towns_list_3);
     city.Fill(ui->towns_list2_2);
     city.Fill(ui->towns_list2_3);
+    on_dispBtn_clicked();
 }

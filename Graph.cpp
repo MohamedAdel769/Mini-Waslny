@@ -17,6 +17,8 @@ QString Graph::print_path(long long **next, int i, int j)
 Graph::Graph()
 {
     Towns_ID = 1;
+    MAX_DIST = 0 ;
+    user = false ;
 }
 
 void Graph::initialize(){
@@ -45,10 +47,12 @@ QString Graph::add_town(QString Tname)
         towns_data[Tname] = Towns_ID++;
         adjlist.resize(Towns_ID);
         source.resize(Towns_ID);
-        UndoDetails tmp ;
-        tmp.AddT = 1;
-        tmp.Tname1 = Tname;
-        last_updts.push(tmp);
+        if(user){
+            UndoDetails tmp ;
+            tmp.AddT = 1;
+            tmp.Tname1 = Tname;
+            last_updts.push(tmp);
+        }
     }
     else
     {
@@ -63,11 +67,13 @@ void Graph::add_distance(QString tA, QString tB, long long dist)
     adjlist[tA_ID].push_back({ tB_ID, dist });
     adjlist[tB_ID].push_back({ tA_ID, dist });
     MAX_DIST += dist ;
-    UndoDetails tmp ;
-    tmp.AddD = 1;
-    tmp.Tname1 = tA;
-    tmp.Tname2 = tB;
-    last_updts.push(tmp);
+    if(user){
+        UndoDetails tmp ;
+        tmp.AddD = 1;
+        tmp.Tname1 = tA;
+        tmp.Tname2 = tB;
+        last_updts.push(tmp);
+    }
 }
 
 void Graph::apply_dijkstra()
@@ -202,7 +208,8 @@ void Graph::delete_graph()
         }
         tmp.cityDetails.push_back(temp);
     }
-    last_updts.push(tmp);
+    if(user)
+        last_updts.push(tmp);
     graph_data.clear();
     towns_data.clear();
     adjlist.clear();
@@ -227,7 +234,8 @@ void Graph::del_town(QString input){
             }
         }
     }
-    last_updts.push(tmp);
+    if(user)
+        last_updts.push(tmp);
     adjlist[del_id].clear();
     towns_data.erase(input);
     graph_data.erase(del_id);
@@ -235,14 +243,16 @@ void Graph::del_town(QString input){
 
 void Graph::edit_dist(QString a, QString b, long long new_dist){
     int a_id = towns_data[a], b_id = towns_data[b];
-    UndoDetails tmp ;
     for (int i = 0; i < adjlist[a_id].size(); i++) {
         if (adjlist[a_id][i].first == b_id) {
-            tmp.Tname1 = a;
-            tmp.EditD = 1;
-            tmp.Tname2 = b;
-            tmp.dist = adjlist[a_id][i].second;
-            last_updts.push(tmp);
+            if(user){
+                UndoDetails tmp ;
+                tmp.Tname1 = a;
+                tmp.EditD = 1;
+                tmp.Tname2 = b;
+                tmp.dist = adjlist[a_id][i].second;
+                last_updts.push(tmp);
+            }
             adjlist[a_id][i].second = new_dist;
             break;
         }
@@ -258,14 +268,16 @@ void Graph::edit_dist(QString a, QString b, long long new_dist){
 void Graph::remove_edge(QString a, QString b){
     int a_id = towns_data[a] , b_id = towns_data[b];
     vector<pair<int, long long>> :: iterator it ;
-    UndoDetails tmp ;
     for(it = adjlist[a_id].begin();it != adjlist[a_id].end();it++){
         if ((*it).first == b_id) {
-            tmp.Tname1 = a;
-            tmp.DelD = 1;
-            tmp.Tname2 = b;
-            tmp.dist = (*it).second;
-            last_updts.push(tmp);
+            if(user){
+                UndoDetails tmp ;
+                tmp.Tname1 = a;
+                tmp.DelD = 1;
+                tmp.Tname2 = b;
+                tmp.dist = (*it).second;
+                last_updts.push(tmp);
+            }
             adjlist[a_id].erase(it);
             break;
         }
@@ -289,8 +301,8 @@ bool Graph::isConnected(int A,int B){
 void Graph::Undo(){
     if(!last_updts.empty()){
         UndoDetails tmp = last_updts.top();
+        user = false ;
         last_updts.pop();
-        bool temp ;
         if(tmp.AddD){
             remove_edge(tmp.Tname1, tmp.Tname2);
         }
