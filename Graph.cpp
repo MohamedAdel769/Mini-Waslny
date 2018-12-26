@@ -1,19 +1,5 @@
 #include "Graph.h"
 
-
-QString Graph::print_path(long long **next, int i, int j)
-{
-    if (i == j)
-        temp += graph_data[i] + " ";
-    else if (next[i][j] == -1)
-        temp = "no path found\n" ;
-    else {
-        print_path(next, i, next[i][j]);
-        temp += graph_data[j] + " ";
-    }
-    return temp;
-}
-
 Graph::Graph()
 {
     Towns_ID = 1;
@@ -22,6 +8,7 @@ Graph::Graph()
 }
 
 void Graph::initialize(){
+    user = false;
     add_town("A");
     add_town("B");
     add_town("C");
@@ -58,7 +45,7 @@ QString Graph::add_town(QString Tname)
     {
         Tname = "Town already exist";
     }
-    return  Tname;
+    return Tname;
 }
 
 void Graph::add_distance(QString tA, QString tB, long long dist)
@@ -130,6 +117,19 @@ void Graph::apply_floyd()
             }
         }
     }
+}
+
+QString Graph::print_path(long long **next, int i, int j)
+{
+    if (i == j)
+        temp += graph_data[i] + " ";
+    else if (next[i][j] == -1)
+        temp = "no path found\n" ;
+    else {
+        print_path(next, i, next[i][j]);
+        temp += graph_data[j] + " ";
+    }
+    return temp;
 }
 
 QString Graph::get_shortestPath(QString A, QString B)
@@ -315,6 +315,8 @@ void Graph::Undo(){
             }
             for(auto i : tmp.cityDetails){
                 for(int j=0;j<i.childs.size();j++){
+                    if(isConnected(towns_data[i.Tname1], towns_data[i.childs[j].first]))
+                        continue;
                     add_distance(i.Tname1, i.childs[j].first, i.childs[j].second);
                 }
             }

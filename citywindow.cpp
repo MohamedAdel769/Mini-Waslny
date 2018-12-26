@@ -48,6 +48,8 @@ void CityWindow::on_updBtn_clicked()
 
 void CityWindow::on_deleteBtn_clicked()
 {
+    meow->setMedia(QUrl("qrc:/images/oh-boy.mp3"));
+    meow->play();
     ui->stackedWidget->setCurrentIndex(0);
     ui->input_txt->setEnabled(false);
     ui->output_txt->clear();

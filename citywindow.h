@@ -12,6 +12,7 @@ class CityWindow;
 class CityWindow : public QMainWindow
 {
     Q_OBJECT
+QMediaPlayer *meow=new QMediaPlayer();
 
 public:
     explicit CityWindow(QWidget *parent = nullptr);

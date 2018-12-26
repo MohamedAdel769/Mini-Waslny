@@ -14,6 +14,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     QPixmap logo(":/images/logo2.png");
     ui->label->setPixmap(logo);
+    strtmeow->setMedia(QUrl("qrc:/images/Bongo_Cat_-_BLACKPINK_DDU-DU_DDU-DU_K-POP[Converterino.online].mp3"));
+    strtmeow->play();
 }
 
 MainWindow::~MainWindow()
@@ -26,6 +28,7 @@ void MainWindow::on_Start_clicked()
     CityWindow *main = new CityWindow;
     main->show();
     this->hide();
+    strtmeow->stop();
 }
 
 void MainWindow::on_exit_clicked()
