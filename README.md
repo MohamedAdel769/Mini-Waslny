@@ -11,3 +11,10 @@ User can:
     - Delete Distance, Town.
     - Edit Distnace.
   - Undo last operation.
+
+# Screenshots:
+![alt text](https://github.com/MohamedAdel769/Mini-Waslny/blob/master/images/home.png)
+
+![alt text](https://github.com/MohamedAdel769/Mini-Waslny/blob/master/images/options.png)
+
+![alt text](https://github.com/MohamedAdel769/Mini-Waslny/blob/master/images/SP.png)
